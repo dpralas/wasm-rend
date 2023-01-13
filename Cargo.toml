@@ -24,3 +24,5 @@ web-sys = { version = "0.3", features = [
 winit = "0.27"
 wgpu = { version = "0.14", features = ["webgl"] }
 glam = "0.22"
+stl_io = "0.7"
+rayon = { version = "1.6", optional = true }

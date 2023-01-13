@@ -1,6 +1,9 @@
 mod dom;
+mod io;
+mod model;
 mod render;
 mod runtime;
+mod state;
 
 use dom::Dom;
 use log::info;
@@ -12,6 +15,7 @@ use winit::{
 };
 
 use crate::runtime::Runtime;
+pub use state::shared::SharedState;
 
 #[wasm_bindgen(start)]
 pub async fn run() {
