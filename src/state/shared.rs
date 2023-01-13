@@ -1,5 +1,9 @@
+use std::io::Cursor;
+
 use log::info;
 use wasm_bindgen::prelude::*;
+
+use crate::model::mesh::Mesh;
 
 #[wasm_bindgen]
 #[derive(Debug)]
@@ -23,7 +27,12 @@ impl SharedState {
     pub fn echo(input: &str) {
         info!("{:?}", input);
     }
-    pub fn add_text_stl(input: &str) {
-        info!("{:?}", input);
+    pub fn add_stl(input: &str) {
+        let reader = Cursor::new(input);
+        let mesh = Mesh::from_stl(reader).unwrap();
+        info!("vertices: {:?}", mesh.vertices.len());
+        info!("faces: {:?}", mesh.faces.len());
+        info!("min: {:?}", mesh.min);
+        info!("max: {:?}", mesh.max);
     }
 }

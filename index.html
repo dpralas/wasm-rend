@@ -51,39 +51,43 @@
             height: 5rem;
         }
 
-        #play {
+        #file-input {
             position: absolute;
-            width: 50px;
-            height: 50px;
         }
     </style>
 </head>
 
 <body>
-    <div id="canvas_container">
-        <canvas id="wgpu_canvas"></canvas>
-    </div>
-    <button id="play">Open</button>
     <script type="module">
         import init, { SharedState } from './wasm_slicer.js';
-        import { CUBE } from './assets.js';
 
         async function run() {
             await init();
-
-            const result = SharedState.new();
-            const res = result.display();
-            console.log(res);
-            const button = document.getElementById("play");
-            button.addEventListener("click", function () { SharedState.add_text_stl(CUBE) }, false);
+        }
+        function loadFile(file) {
+            let reader = new FileReader();
+            reader.readAsText(file, 'UTF-8');
+            reader.onload = readerEvent => {
+                let content = readerEvent.target.result;
+                SharedState.add_stl(content);
+            }
         }
         const canvas = document.getElementById("wgpu_canvas");
         canvas.oncontextmenu = function (e) {
             e.preventDefault();
         };
+        const input = document.getElementById("file-input");
+        input.onchange = e => {
+            const file = e.target.files[0];
+            loadFile(file);
+        }
 
         run();
     </script>
+    <div id="canvas_container">
+        <canvas id="wgpu_canvas"></canvas>
+    </div>
+    <input id="file-input" type="file">
     <div id="event_logger_container">
         <h2>Event Log</h2>
         <ul id="event_logger">

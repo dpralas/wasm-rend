@@ -8,6 +8,7 @@ mod state;
 use dom::Dom;
 use log::info;
 use render::WgpuContext;
+pub use state::shared::SharedState;
 use wasm_bindgen::prelude::*;
 use winit::{
     dpi::LogicalSize, event_loop::EventLoop,
@@ -15,7 +16,6 @@ use winit::{
 };
 
 use crate::runtime::Runtime;
-pub use state::shared::SharedState;
 
 #[wasm_bindgen(start)]
 pub async fn run() {
