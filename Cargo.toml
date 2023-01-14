@@ -26,5 +26,11 @@ wgpu = { version = "0.14", features = ["webgl"] }
 glam = "0.22"
 stl_io = "0.7"
 rayon = { version = "1", optional = true }
+wasm-bindgen-rayon = { version = "1", features = [
+    "no-bundler",
+], optional = true }
 byteorder = "1"
 fxhash = "0.2"
+
+[features]
+parallel = ["rayon", "wasm-bindgen-rayon"]

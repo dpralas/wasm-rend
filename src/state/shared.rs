@@ -27,7 +27,7 @@ impl SharedState {
     pub fn echo(input: &str) {
         info!("{:?}", input);
     }
-    pub fn add_stl(input: &str) {
+    pub fn add_stl(input: &[u8]) {
         let reader = Cursor::new(input);
         let mesh = Mesh::from_stl(reader).unwrap();
         info!("vertices: {:?}", mesh.vertices.len());
