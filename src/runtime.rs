@@ -1,24 +1,35 @@
-use log::info;
+use std::sync::Mutex;
+
+use once_cell::sync::Lazy;
+use wasm_bindgen::prelude::wasm_bindgen;
 use winit::{
-    event::{Event, WindowEvent},
+    event::Event,
     event_loop::{ControlFlow, EventLoopWindowTarget},
     window::Window,
 };
 
-use crate::{dom::Dom, render::WgpuContext};
+use crate::{dom::Dom, render::WgpuContext, state::State};
 
+#[wasm_bindgen]
 pub struct Runtime {
     context: WgpuContext,
     window: Window,
     dom: Dom,
+    state: &'static Lazy<Mutex<State>>,
 }
 
 impl Runtime {
-    pub fn new(context: WgpuContext, window: Window, dom: Dom) -> Self {
+    pub fn new(
+        context: WgpuContext,
+        window: Window,
+        dom: Dom,
+        state: &'static Lazy<Mutex<State>>,
+    ) -> Self {
         Self {
             context,
             window,
             dom,
+            state,
         }
     }
 

@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <title>WGPU Slicer</title>
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.png">
     <style>
         html,
         body {
@@ -59,7 +60,7 @@
 
 <body>
     <script type="module">
-        import init, { State } from './wasm_rend.js';
+        import init, { get_state } from './wasm_rend.js';
 
         function loadFile(state, file) {
             let reader = new FileReader();
@@ -83,7 +84,7 @@
         }
 
         init().then((wasm) => {
-            let state = new State();
+            let state = get_state();
             initSetup(state);
         });
     </script>

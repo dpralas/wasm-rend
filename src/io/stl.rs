@@ -1,4 +1,4 @@
-use std::io::{self, BufRead, BufReader, Read, Seek, Write};
+use std::io::{self, BufRead, BufReader, Read, Seek};
 
 use byteorder::{LittleEndian, ReadBytesExt};
 use fxhash::FxHashMap;
@@ -7,11 +7,6 @@ use glam::Vec3;
 use crate::model::mesh::{Mesh, MeshType};
 
 const HEADER_SIZE: usize = 80;
-
-pub enum StlType {
-    ASCII,
-    BINARY,
-}
 
 /// Check if stl is binary or ascii format by looking at first bytes
 fn is_ascii_stl<F: Read + Seek>(read: &mut F) -> io::Result<bool> {

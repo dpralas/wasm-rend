@@ -5,8 +5,11 @@ mod render;
 mod runtime;
 mod state;
 
+use std::sync::Mutex;
+
 use dom::Dom;
 use log::info;
+use once_cell::sync::Lazy;
 use render::WgpuContext;
 use wasm_bindgen::prelude::*;
 use winit::{
@@ -14,7 +17,14 @@ use winit::{
     platform::web::WindowBuilderExtWebSys, window::WindowBuilder,
 };
 
-use crate::runtime::Runtime;
+use crate::{runtime::Runtime, state::State};
+
+static STATE: Lazy<Mutex<State>> = Lazy::new(|| Mutex::new(State::default()));
+
+#[wasm_bindgen]
+pub fn get_state() -> State {
+    STATE.lock().unwrap().clone()
+}
 
 #[wasm_bindgen(start)]
 pub async fn run() {
@@ -42,7 +52,7 @@ pub async fn run() {
         .expect("Could not build window");
     info!("Created window");
 
-    let mut runtime = Runtime::new(context, window, dom);
+    let mut runtime = Runtime::new(context, window, dom, &STATE);
     event_loop.run(move |event, target, control_flow| {
         runtime.main_loop(event, target, control_flow)
     });
