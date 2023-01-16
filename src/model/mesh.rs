@@ -3,7 +3,7 @@ use glam::{Mat4, Vec3};
 use rayon::prelude::*;
 
 #[derive(Debug, Clone)]
-enum SupportItem {
+pub enum SupportItem {
     Cone,
     Cylinder,
 }

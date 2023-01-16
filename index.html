@@ -59,31 +59,33 @@
 
 <body>
     <script type="module">
-        import init, { SharedState } from './wasm_slicer.js';
+        import init, { State } from './wasm_slicer.js';
 
-        async function run() {
-            await init();
-        }
-        function loadFile(file) {
+        function loadFile(state, file) {
             let reader = new FileReader();
             reader.readAsArrayBuffer(file);
             reader.onload = () => {
                 let arrayBuffer = reader.result;
                 let bytes = new Uint8Array(arrayBuffer);
-                SharedState.add_stl(bytes);
+                state.add_stl(bytes);
             }
         }
-        const canvas = document.getElementById("wgpu_canvas");
-        canvas.oncontextmenu = function (e) {
-            e.preventDefault();
-        };
-        const input = document.getElementById("file-input");
-        input.onchange = e => {
-            const file = e.target.files[0];
-            loadFile(file);
+        function initSetup(state) {
+            const canvas = document.getElementById("wgpu_canvas");
+            canvas.oncontextmenu = function (e) {
+                e.preventDefault();
+            };
+            const input = document.getElementById("file-input");
+            input.onchange = e => {
+                const file = e.target.files[0];
+                loadFile(state, file);
+            }
         }
 
-        run();
+        init().then((wasm) => {
+            let state = new State();
+            initSetup(state);
+        });
     </script>
     <div id="canvas_container">
         <canvas id="wgpu_canvas"></canvas>
