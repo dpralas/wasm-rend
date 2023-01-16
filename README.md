@@ -25,7 +25,7 @@ cargo build --target wasm32-unknown-unknown
 
 ### 3. Generate WASM bindings
 ```
-wasm-bindgen target/wasm32-unknown-unknown/debug/wasm_slicer.wasm --out-dir . --target web --no-typescript
+wasm-bindgen target/wasm32-unknown-unknown/debug/wasm_rend.wasm --out-dir . --target web --no-typescript
 ```
 
 ### 4. Serve
