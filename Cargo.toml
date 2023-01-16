@@ -1,5 +1,5 @@
 [package]
-name = "wasm_slicer"
+name = "wasm-rend"
 version = "0.1.0"
 authors = ["Denis Pralas <dpralas@gmail.com>"]
 edition = "2021"
