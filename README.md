@@ -32,3 +32,10 @@ wasm-bindgen target/wasm32-unknown-unknown/debug/wasm_rend.wasm --out-dir . --ta
 ```
 http
 ```
+
+## TODOs:
+* implement camera
+* translate OpenGL to wgpu
+* translate shaders to WGSL
+* implement mouse and keyboard input
+* maybe a nice UI
