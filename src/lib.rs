@@ -1,16 +1,16 @@
 mod dom;
+mod gpu;
 mod io;
 mod model;
-mod render;
 mod runtime;
 mod state;
 
 use std::sync::Mutex;
 
 use dom::Dom;
+use gpu::WgpuContext;
 use log::info;
 use once_cell::sync::Lazy;
-use render::WgpuContext;
 use wasm_bindgen::prelude::*;
 use winit::{
     dpi::LogicalSize, event_loop::EventLoop,

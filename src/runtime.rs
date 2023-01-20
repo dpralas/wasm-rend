@@ -8,7 +8,7 @@ use winit::{
     window::Window,
 };
 
-use crate::{dom::Dom, render::WgpuContext, state::State};
+use crate::{dom::Dom, gpu::WgpuContext, state::State};
 
 #[wasm_bindgen]
 pub struct Runtime {

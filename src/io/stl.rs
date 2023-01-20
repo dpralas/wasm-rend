@@ -4,7 +4,7 @@ use byteorder::{LittleEndian, ReadBytesExt};
 use fxhash::FxHashMap;
 use glam::Vec3;
 
-use crate::model::mesh::{Mesh, MeshType};
+use crate::model::{mesh::MeshType, Mesh};
 
 const HEADER_SIZE: usize = 80;
 
