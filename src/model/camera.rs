@@ -37,7 +37,7 @@ impl Default for Camera {
 }
 
 impl Camera {
-    fn build_view_projection_matrix(&self) -> Mat4 {
+    pub fn build_view_projection_matrix(&self) -> Mat4 {
         let view = Mat4::look_at_rh(self.eye, self.focus, self.up);
         let proj = Mat4::perspective_lh(
             f32::to_radians(self.fov_y),
