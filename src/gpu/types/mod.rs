@@ -1,4 +1,7 @@
-mod camera;
+pub mod camera;
+pub mod index;
+pub mod object;
+pub mod vertex;
 
 use wgpu::{BindGroup, BindGroupLayout, Buffer, Device, VertexBufferLayout};
 

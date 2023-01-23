@@ -9,22 +9,22 @@ struct Rotation {
 }
 
 #[derive(Debug, Default)]
-struct Transform {
+pub struct Transform {
     translation: Vec3,
     scale: Vec3,
     rotation: Rotation,
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug)]
 pub struct Object<'mesh> {
-    mesh: Option<&'mesh Mesh>,
-    transform: Transform,
+    pub mesh: &'mesh Mesh,
+    pub transform: Transform,
 }
 
 impl<'mesh> From<&'mesh Mesh> for Object<'mesh> {
     fn from(mesh: &'mesh Mesh) -> Self {
         Self {
-            mesh: Some(mesh),
+            mesh: mesh,
             transform: Transform::default(),
         }
     }

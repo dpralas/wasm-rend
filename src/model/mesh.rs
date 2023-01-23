@@ -18,9 +18,9 @@ pub enum MeshType {
 #[derive(Default, Debug, Clone)]
 pub struct Mesh {
     pub vertices: Vec<Vec3>,
+    pub indices: Vec<[usize; 3]>,
     pub vertex_normals: Vec<Vec3>,
-    pub face_normals: Vec<Vec3>,
-    pub faces: Vec<[usize; 3]>,
+    pub index_normals: Vec<Vec3>,
     pub convex_hull: Option<Box<Mesh>>,
     pub max: Vec3,
     pub min: Vec3,

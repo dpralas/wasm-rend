@@ -47,10 +47,10 @@ impl Mesh {
             .map(|v| Vec3::new(v[0], v[1], v[2]))
             .collect();
 
-        let faces: Vec<[usize; 3]> =
+        let indices: Vec<[usize; 3]> =
             mesh.faces.iter().map(|f| f.vertices).collect();
 
-        let face_normals: Vec<Vec3> = mesh
+        let index_normals: Vec<Vec3> = mesh
             .faces
             .iter()
             .map(|f| f.normal)
@@ -60,9 +60,9 @@ impl Mesh {
         let mut vertex_normals: Vec<Vec3> =
             vec![Vec3::new(0.0, 0.0, 0.0); vertices.len()];
 
-        for (face_index, face) in faces.iter().enumerate() {
+        for (face_index, face) in indices.iter().enumerate() {
             for vertice_index in face {
-                vertex_normals[*vertice_index] += face_normals[face_index];
+                vertex_normals[*vertice_index] += index_normals[face_index];
             }
         }
         for vertex_normal in &mut vertex_normals {
@@ -71,9 +71,9 @@ impl Mesh {
 
         let mut mesh = Mesh {
             vertices,
+            indices,
             vertex_normals,
-            face_normals,
-            faces,
+            index_normals,
             convex_hull: None,
             max: Vec3::splat(0.0),
             min: Vec3::splat(0.0),
@@ -91,8 +91,8 @@ impl Mesh {
 
         let triangles = input.read_u32::<LittleEndian>()? as usize;
         let mut points = FxHashMap::default();
-        let mut face_normals = Vec::with_capacity(triangles);
-        let mut faces = Vec::with_capacity(triangles);
+        let mut index_normals = Vec::with_capacity(triangles);
+        let mut indices = Vec::with_capacity(triangles);
         let mut vertices = Vec::new();
         let mut vertex_normals: Vec<Vec3> = Vec::new();
 
@@ -110,10 +110,10 @@ impl Mesh {
             }
             // add face normal
             let normal = Vec3::from([tri_buf[0], tri_buf[1], tri_buf[2]]);
-            face_normals.push(normal);
+            index_normals.push(normal);
 
             // push new face with indexes to points
-            faces.push([usize::MAX, usize::MAX, usize::MAX]);
+            indices.push([usize::MAX, usize::MAX, usize::MAX]);
             for point in tri_buf[3..].chunks_exact(3) {
                 // create point
                 let point_bits = [
@@ -140,8 +140,8 @@ impl Mesh {
                 }
                 // add point index to current face
                 for point_i in 0..3 {
-                    if faces[i][point_i] == usize::MAX {
-                        faces[i][point_i] = face_point_index;
+                    if indices[i][point_i] == usize::MAX {
+                        indices[i][point_i] = face_point_index;
                         break;
                     }
                 }
@@ -153,9 +153,9 @@ impl Mesh {
         }
         let mut mesh = Mesh {
             vertices,
+            indices,
             vertex_normals,
-            face_normals,
-            faces,
+            index_normals,
             convex_hull: None,
             max: Vec3::splat(0.0),
             min: Vec3::splat(0.0),
