@@ -1,7 +1,7 @@
 use wgpu::{util::DeviceExt, BindGroup, BindGroupLayout, Buffer, Device};
 
 use crate::{
-    gpu::{BoundUniform, GpuUniform},
+    gpu::{BoundBuffer, GpuBuffer},
     model::Camera,
 };
 
@@ -15,13 +15,13 @@ impl<'a> From<&'a Camera> for CameraUniform<'a> {
     }
 }
 
-impl<'a> GpuUniform for CameraUniform<'a> {
-    fn bind(&self, device: &Device) -> BoundUniform {
+impl<'a> GpuBuffer for CameraUniform<'a> {
+    fn bind(&self, device: &Device) -> BoundBuffer {
         let layout = self.create_bind_group_layout(device);
         let content = self.get_buffer_contents();
         let buffer = self.create_buffer(device, &content);
         let group = self.create_bind_group(&buffer, &layout, device);
-        BoundUniform {
+        BoundBuffer {
             buffer,
             content,
             group,

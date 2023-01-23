@@ -2,7 +2,7 @@ mod camera;
 
 use wgpu::{BindGroup, BindGroupLayout, Buffer, Device, VertexBufferLayout};
 
-pub struct BoundUniform {
+pub struct BoundBuffer {
     buffer: Buffer,
     content: Vec<u8>,
     group: BindGroup,
@@ -14,6 +14,6 @@ pub trait GpuPrimitive {
     fn desc<'a>() -> VertexBufferLayout<'a>;
 }
 
-pub trait GpuUniform {
-    fn bind(&self, device: &Device) -> BoundUniform;
+pub trait GpuBuffer {
+    fn bind(&self, device: &Device) -> BoundBuffer;
 }
