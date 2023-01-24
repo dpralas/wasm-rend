@@ -1,10 +1,7 @@
 use wgpu::{util::DeviceExt, BindGroup, BindGroupLayout, Buffer, Device};
 
 use super::index::GpuIndex;
-use crate::{
-    gpu::{types::vertex::GpuVertex, GpuPrimitive},
-    model::Object,
-};
+use crate::{gpu::types::vertex::GpuVertex, model::Object};
 
 #[derive(Copy, Clone, Debug)]
 pub struct GpuObject<'a> {
@@ -60,7 +57,7 @@ impl<'a> GpuObject<'a> {
         device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
             label: Some("Object Buffer"),
             contents: buffer_contents,
-            usage: wgpu::BufferUsages::UNIFORM | wgpu::BufferUsages::COPY_DST,
+            usage: wgpu::BufferUsages::VERTEX,
         })
     }
 
@@ -68,9 +65,10 @@ impl<'a> GpuObject<'a> {
         device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
             entries: &[wgpu::BindGroupLayoutEntry {
                 binding: 0,
-                visibility: wgpu::ShaderStages::VERTEX,
+                visibility: wgpu::ShaderStages::VERTEX
+                    | wgpu::ShaderStages::FRAGMENT,
                 ty: wgpu::BindingType::Buffer {
-                    ty: wgpu::BufferBindingType::Uniform,
+                    ty: wgpu::BufferBindingType::Storage { read_only: true },
                     has_dynamic_offset: false,
                     min_binding_size: None,
                 },
