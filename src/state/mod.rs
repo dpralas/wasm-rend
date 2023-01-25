@@ -13,7 +13,8 @@ use crate::{model::Mesh, state::shared::SharedState};
 #[derive(Debug, Clone, Default)]
 pub struct State {
     shared: SharedState,
-    engine: Engine,
+    #[wasm_bindgen(skip)]
+    pub engine: Engine,
 }
 
 #[wasm_bindgen]

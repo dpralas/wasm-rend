@@ -1,10 +1,10 @@
 use std::collections::HashMap;
 
 use log::info;
-use wgpu::ShaderModule;
+use wgpu::{Color, ShaderModule};
 use winit::dpi::PhysicalSize;
 
-use super::Shader;
+use super::{frame::Frame, pipeline, Shader};
 use crate::state::State;
 
 pub struct WgpuContext {
@@ -84,7 +84,14 @@ impl WgpuContext {
         self.shaders.insert(name, shader.bind(&self.device));
     }
 
+    pub fn get_shader(&self, name: &'static str) -> &ShaderModule {
+        self.shaders
+            .get(name)
+            .unwrap_or_else(|| panic!("No shader with name '{}'", name))
+    }
+
     pub fn render(&mut self, state: &State) -> Result<(), wgpu::SurfaceError> {
+        info!("render called");
         // Get the surface texture we will draw on
         let output = self.surface.get_current_texture()?;
         let view = output
@@ -97,6 +104,72 @@ impl WgpuContext {
                 label: Some("Render Encoder"),
             },
         );
+
+        let frame = Frame::from(&state.engine);
+        let camera_uniform = frame.create_camera_binding(&self.device);
+        let pipeline = {
+            let pipeline_layout = self.device.create_pipeline_layout(
+                &wgpu::PipelineLayoutDescriptor {
+                    label: Some("Solid Pipeline Layout"),
+                    bind_group_layouts: &[&camera_uniform.layout],
+                    push_constant_ranges: &[],
+                },
+            );
+            pipeline::get(self, pipeline_layout)
+        };
+
+        let vertex_buffers = frame.create_vertex_buffers(&self.device);
+        let index_buffers = frame.create_index_buffers(&self.device);
+
+        // Execute render pass
+        {
+            // Make pass
+            let mut pass =
+                encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+                    label: Some("Render Pass"),
+                    color_attachments: &[Some(
+                        wgpu::RenderPassColorAttachment {
+                            view: &view,
+                            resolve_target: None,
+                            ops: wgpu::Operations {
+                                load: wgpu::LoadOp::Clear(Color {
+                                    r: 0.0,
+                                    g: 0.0,
+                                    b: 0.0,
+                                    a: 1.0,
+                                }),
+                                store: true,
+                            },
+                        },
+                    )],
+                    depth_stencil_attachment: None,
+                });
+
+            // Draw world data
+            pass.set_pipeline(&pipeline);
+            pass.set_bind_group(0, &camera_uniform.group, &[]);
+            for (vertex_buffer, index_buffer) in
+                vertex_buffers.iter().zip(index_buffers.iter())
+            {
+                pass.set_vertex_buffer(0, vertex_buffer.slice(..));
+                pass.set_index_buffer(
+                    index_buffer.slice(..),
+                    wgpu::IndexFormat::Uint32,
+                );
+                pass.draw(0..8, 0..0);
+            }
+        }
+
+        // Write buffers
+        self.queue.write_buffer(
+            &camera_uniform.buffer,
+            0,
+            &camera_uniform.content,
+        );
+
+        // Submit queue
+        self.queue.submit(std::iter::once(encoder.finish()));
+        output.present();
 
         Ok(())
     }

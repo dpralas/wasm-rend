@@ -52,7 +52,14 @@ pub async fn run() {
         .expect("Could not build window");
     info!("Created window");
 
-    context.add_shader("vert", include_str!("../assets/shaders/solid.wgsl"));
+    context.add_shader(
+        "solid.vert",
+        include_str!("../assets/shaders/solid.vert.wgsl"),
+    );
+    context.add_shader(
+        "solid.frag",
+        include_str!("../assets/shaders/solid.frag.wgsl"),
+    );
 
     let mut runtime = Runtime::new(context, window, dom, &STATE);
     event_loop.run(move |event, target, control_flow| {

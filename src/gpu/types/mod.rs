@@ -6,10 +6,10 @@ pub mod vertex;
 use wgpu::{BindGroup, BindGroupLayout, Buffer, Device, VertexBufferLayout};
 
 pub struct BoundBuffer {
-    buffer: Buffer,
-    content: Vec<u8>,
-    group: BindGroup,
-    layout: BindGroupLayout,
+    pub buffer: Buffer,
+    pub content: Vec<u8>,
+    pub group: BindGroup,
+    pub layout: BindGroupLayout,
 }
 
 pub trait GpuPrimitive {

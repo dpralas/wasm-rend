@@ -1,4 +1,5 @@
 mod frame;
+pub mod pipeline;
 mod shader;
 mod types;
 mod wgpu_context;
