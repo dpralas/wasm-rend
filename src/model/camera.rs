@@ -27,11 +27,11 @@ impl Default for Camera {
         Self {
             eye: Vec3::new(0.0, 1.0, 2.0),
             focus: Vec3::ZERO,
-            up: Vec3::Y,
+            up: Vec3::Z,
             aspect: 640.0 / 480.0,
             fov_y: 45.0,
-            z_near: 0.1,
-            z_far: 100.0,
+            z_near: 0.01,
+            z_far: 1000.0,
         }
     }
 }
