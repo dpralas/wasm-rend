@@ -26,15 +26,15 @@ struct FragmentOut {
 
 @vertex
 fn vs_main(vertex_in: VertexIn) -> VertexOut {
-    var vertex_out = VertexOut;
-    vertex_out.clip_position = camera.transform * model.transform * vec4(vertex.position, 1.0);
-    vertex_out.normal = vertex.normal;
+    var vertex_out = VertexOut();
+    vertex_out.clip_position = camera.view_proj * model.transform * vec4(vertex_in.position, 1.0);
+    vertex_out.normal = vertex_in.normal;
     return vertex_out;
 }
 
 @fragment
 fn fs_main(fragment_in: VertexOut) -> FragmentOut {
-    var fragment_out = FragmentOut;
+    var fragment_out = FragmentOut();
     fragment_out.color = vec4<f32>(1.0, 1.0, 1.0, 1.0);
     return fragment_out;
 }

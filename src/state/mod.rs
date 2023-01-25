@@ -3,7 +3,7 @@ mod shared;
 
 use std::io::Cursor;
 
-use engine::Engine;
+pub use engine::Engine;
 use log::info;
 use wasm_bindgen::prelude::*;
 

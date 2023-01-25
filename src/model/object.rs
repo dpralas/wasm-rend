@@ -1,36 +1,32 @@
 use glam::{Mat4, Vec3};
 
-use crate::model::Mesh;
-
-#[derive(Debug, Default)]
+#[derive(Debug, Clone, Default)]
 struct Rotation {
     euler: Vec3, // x: roll, y: pitch, z: yaw
     matrix: Mat4,
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Clone, Default)]
 pub struct Transform {
     translation: Vec3,
     scale: Vec3,
     rotation: Rotation,
 }
 
-#[derive(Debug)]
-pub struct Object<'mesh> {
-    pub mesh: &'mesh Mesh,
+#[derive(Debug, Clone, Default)]
+pub struct Object {
+    pub name: Option<String>,
     pub transform: Transform,
 }
 
-impl<'mesh> From<&'mesh Mesh> for Object<'mesh> {
-    fn from(mesh: &'mesh Mesh) -> Self {
+impl Object {
+    pub fn with_name(name: &str) -> Self {
         Self {
-            mesh: mesh,
+            name: Some(name.to_owned()),
             transform: Transform::default(),
         }
     }
-}
 
-impl<'mesh> Object<'mesh> {
     pub fn get_transform_matrix(&self) -> Mat4 {
         Mat4::from_translation(self.transform.translation)
             * self.transform.rotation.matrix

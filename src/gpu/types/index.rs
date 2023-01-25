@@ -4,7 +4,7 @@ use crate::gpu::GpuPrimitive;
 
 #[repr(C)]
 #[derive(Copy, Clone, Debug)]
-pub struct GpuIndex([u32; 3]);
+pub struct GpuIndex([usize; 3]);
 
 unsafe impl bytemuck::Pod for GpuIndex {}
 unsafe impl bytemuck::Zeroable for GpuIndex {}
@@ -31,6 +31,6 @@ impl GpuPrimitive for GpuIndex {
 
 impl From<&[usize; 3]> for GpuIndex {
     fn from(index: &[usize; 3]) -> Self {
-        GpuIndex([index[0] as u32, index[1] as u32, index[2] as u32])
+        GpuIndex(*index)
     }
 }

@@ -1,23 +1,26 @@
 use wgpu::{util::DeviceExt, BindGroup, BindGroupLayout, Buffer, Device};
 
 use super::index::GpuIndex;
-use crate::{gpu::types::vertex::GpuVertex, model::Object};
+use crate::{
+    gpu::types::vertex::GpuVertex,
+    model::{Mesh, Object},
+};
 
 #[derive(Copy, Clone, Debug)]
 pub struct GpuObject<'a> {
-    object: &'a Object<'a>,
+    mesh: &'a Mesh,
+    object: &'a Object,
 }
 
-impl<'a> From<&'a Object<'a>> for GpuObject<'a> {
-    fn from(object: &'a Object) -> Self {
-        Self { object }
+impl<'a> From<(&'a Mesh, &'a Object)> for GpuObject<'a> {
+    fn from((mesh, object): (&'a Mesh, &'a Object)) -> Self {
+        Self { mesh, object }
     }
 }
 
 impl<'a> GpuObject<'a> {
     fn get_vertices_buffer_contents(&self) -> Vec<u8> {
         let contents = self
-            .object
             .mesh
             .vertices
             .iter()
@@ -28,7 +31,6 @@ impl<'a> GpuObject<'a> {
 
     fn get_indices_buffer_contents(&self) -> Vec<u8> {
         let contents = &self
-            .object
             .mesh
             .indices
             .iter()
