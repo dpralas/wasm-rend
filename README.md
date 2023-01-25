@@ -34,8 +34,6 @@ http
 ```
 
 ## TODOs:
-* implement camera
-* translate OpenGL to wgpu
-* translate shaders to WGSL
+* implement frame from engine
+* implement solid pipeline
 * implement mouse and keyboard input
-* maybe a nice UI

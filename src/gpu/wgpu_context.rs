@@ -1,9 +1,10 @@
 use std::collections::HashMap;
 
 use log::info;
-use wgpu::{BindGroup, BindGroupLayout, ShaderModule, Texture};
+use wgpu::ShaderModule;
 use winit::dpi::PhysicalSize;
 
+use super::Shader;
 use crate::state::State;
 
 pub struct WgpuContext {
@@ -13,7 +14,6 @@ pub struct WgpuContext {
     pub config: wgpu::SurfaceConfiguration,
     pub size: winit::dpi::PhysicalSize<u32>,
     shaders: HashMap<&'static str, ShaderModule>,
-    textures: HashMap<&'static str, (Texture, BindGroup, BindGroupLayout)>,
 }
 
 impl WgpuContext {
@@ -64,7 +64,6 @@ impl WgpuContext {
             config,
             size: PhysicalSize::new(width, height),
             shaders: HashMap::new(),
-            textures: HashMap::new(),
         }
     }
 
@@ -77,7 +76,15 @@ impl WgpuContext {
         }
     }
 
-    pub fn render(&mut self, sim: &State) -> Result<(), wgpu::SurfaceError> {
+    pub fn add_shader(&mut self, name: &'static str, source: &'static str) {
+        if self.shaders.contains_key(name) {
+            panic!("Shader with name '{}' already exists", name);
+        }
+        let shader = Shader { name, source };
+        self.shaders.insert(name, shader.bind(&self.device));
+    }
+
+    pub fn render(&mut self, state: &State) -> Result<(), wgpu::SurfaceError> {
         // Get the surface texture we will draw on
         let output = self.surface.get_current_texture()?;
         let view = output

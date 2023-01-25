@@ -5,7 +5,7 @@ use crate::model::Mesh;
 #[derive(Debug, Default)]
 struct Rotation {
     euler: Vec3, // x: roll, y: pitch, z: yaw
-    matrix: Option<Mat4>,
+    matrix: Mat4,
 }
 
 #[derive(Debug, Default)]
@@ -27,5 +27,13 @@ impl<'mesh> From<&'mesh Mesh> for Object<'mesh> {
             mesh: mesh,
             transform: Transform::default(),
         }
+    }
+}
+
+impl<'mesh> Object<'mesh> {
+    pub fn get_transform_matrix(&self) -> Mat4 {
+        Mat4::from_translation(self.transform.translation)
+            * self.transform.rotation.matrix
+            * Mat4::from_scale(self.transform.scale)
     }
 }

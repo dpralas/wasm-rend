@@ -1,9 +1,9 @@
-mod internal;
+mod engine;
 mod shared;
 
 use std::io::Cursor;
 
-use internal::InternalState;
+use engine::Engine;
 use log::info;
 use wasm_bindgen::prelude::*;
 
@@ -13,7 +13,7 @@ use crate::{model::Mesh, state::shared::SharedState};
 #[derive(Debug, Clone, Default)]
 pub struct State {
     shared: SharedState,
-    internal: InternalState,
+    engine: Engine,
 }
 
 #[wasm_bindgen]
@@ -21,7 +21,7 @@ impl State {
     pub fn add_stl(&mut self, input: &[u8]) {
         let reader = Cursor::new(input);
         let mesh = Mesh::from_stl(reader).unwrap();
-        info!("{:?}", self);
+        self.engine.add_mesh(mesh);
     }
     pub fn echo(&self) {
         info!("{:?}", self);

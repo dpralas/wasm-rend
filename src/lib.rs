@@ -36,7 +36,7 @@ pub async fn run() {
     let canvas = &dom.canvas;
     let (width, height) = (canvas.client_width(), canvas.client_height());
 
-    let context = WgpuContext::new(canvas).await;
+    let mut context = WgpuContext::new(canvas).await;
 
     // Create window
     let event_loop = EventLoop::new();
@@ -51,6 +51,8 @@ pub async fn run() {
         })
         .expect("Could not build window");
     info!("Created window");
+
+    context.add_shader("vert", include_str!("../assets/shaders/solid.wgsl"));
 
     let mut runtime = Runtime::new(context, window, dom, &STATE);
     event_loop.run(move |event, target, control_flow| {
