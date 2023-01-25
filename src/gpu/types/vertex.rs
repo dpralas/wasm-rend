@@ -6,7 +6,8 @@ use crate::gpu::GpuPrimitive;
 #[repr(C)]
 #[derive(Copy, Clone, Debug)]
 pub struct GpuVertex {
-    pub position: [f32; 4],
+    pub position: [f32; 3],
+    pub normal: [f32; 3],
 }
 
 unsafe impl bytemuck::Pod for GpuVertex {}
@@ -18,7 +19,7 @@ impl GpuVertex {
             array_stride: std::mem::size_of::<GpuVertex>()
                 as wgpu::BufferAddress,
             step_mode: wgpu::VertexStepMode::Vertex,
-            attributes: &wgpu::vertex_attr_array![0 => Float32x4, 1 => Float32x4],
+            attributes: &wgpu::vertex_attr_array![0 => Float32x3, 1 => Float32x3],
         };
 }
 
@@ -32,10 +33,11 @@ impl GpuPrimitive for GpuVertex {
     }
 }
 
-impl From<&Vec3> for GpuVertex {
-    fn from(vertex: &Vec3) -> Self {
+impl From<(&Vec3, &Vec3)> for GpuVertex {
+    fn from((vertex, vertex_normal): (&Vec3, &Vec3)) -> Self {
         Self {
-            position: [vertex.x, vertex.y, vertex.z, 1.0],
+            position: [vertex.x, vertex.y, vertex.z],
+            normal: [vertex_normal.x, vertex_normal.y, vertex_normal.z],
         }
     }
 }

@@ -1,6 +1,6 @@
 use wgpu::{util::DeviceExt, BindGroup, BindGroupLayout, Buffer, Device};
 
-use super::index::GpuIndex;
+use super::{index::GpuIndex, BoundBuffer, GpuBuffer};
 use crate::{
     gpu::types::vertex::GpuVertex,
     model::{Mesh, Object},
@@ -18,18 +18,34 @@ impl<'a> From<(&'a Mesh, &'a Object)> for GpuObject<'a> {
     }
 }
 
+impl<'a> GpuBuffer for GpuObject<'a> {
+    fn bind(&self, device: &Device) -> BoundBuffer {
+        let layout = self.create_bind_group_layout(device);
+        let content = self.get_vertex_buffer_contents();
+        let buffer = self.create_vertex_buffer(device, &content);
+        let group = self.create_bind_group(&buffer, &layout, device);
+        BoundBuffer {
+            buffer,
+            content,
+            group,
+            layout,
+        }
+    }
+}
+
 impl<'a> GpuObject<'a> {
-    fn get_vertices_buffer_contents(&self) -> Vec<u8> {
+    fn get_vertex_buffer_contents(&self) -> Vec<u8> {
         let contents = self
             .mesh
             .vertices
             .iter()
-            .map(|vertex| vertex.into())
+            .zip(self.mesh.vertex_normals.iter())
+            .map(|(vertex, vertex_normal)| (vertex, vertex_normal).into())
             .collect::<Vec<GpuVertex>>();
         bytemuck::cast_slice(&contents[..]).to_vec()
     }
 
-    fn get_indices_buffer_contents(&self) -> Vec<u8> {
+    fn get_index_buffer_contents(&self) -> Vec<u8> {
         let contents = &self
             .mesh
             .indices
@@ -39,27 +55,30 @@ impl<'a> GpuObject<'a> {
         bytemuck::cast_slice(&contents[..]).to_vec()
     }
 
-    fn create_bind_group(
+    fn create_vertex_buffer(
         &self,
-        buffer: &Buffer,
-        layout: &BindGroupLayout,
         device: &Device,
-    ) -> BindGroup {
-        device.create_bind_group(&wgpu::BindGroupDescriptor {
-            layout,
-            entries: &[wgpu::BindGroupEntry {
-                binding: 0,
-                resource: buffer.as_entire_binding(),
-            }],
-            label: Some("Object Bind Group"),
+        buffer_contents: &[u8],
+    ) -> Buffer {
+        device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+            label: Some(&format!(
+                "Object {:?} Vertex Buffer",
+                self.object.name
+            )),
+            contents: buffer_contents,
+            usage: wgpu::BufferUsages::VERTEX,
         })
     }
 
-    fn create_buffer(&self, device: &Device, buffer_contents: &[u8]) -> Buffer {
+    fn create_index_buffer(
+        &self,
+        device: &Device,
+        buffer_contents: &[u8],
+    ) -> Buffer {
         device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
-            label: Some("Object Buffer"),
+            label: Some(&format!("Object {:?} Index Buffer", self.object.name)),
             contents: buffer_contents,
-            usage: wgpu::BufferUsages::VERTEX,
+            usage: wgpu::BufferUsages::INDEX,
         })
     }
 
@@ -76,7 +95,26 @@ impl<'a> GpuObject<'a> {
                 },
                 count: None,
             }],
-            label: Some("Object Bind Group Layout"),
+            label: Some(&format!(
+                "Object {:?} Bind Group Layout",
+                self.object.name
+            )),
+        })
+    }
+
+    fn create_bind_group(
+        &self,
+        buffer: &Buffer,
+        layout: &BindGroupLayout,
+        device: &Device,
+    ) -> BindGroup {
+        device.create_bind_group(&wgpu::BindGroupDescriptor {
+            layout,
+            entries: &[wgpu::BindGroupEntry {
+                binding: 0,
+                resource: buffer.as_entire_binding(),
+            }],
+            label: Some(&format!("Object {:?} Bind Group", self.object.name)),
         })
     }
 }

@@ -1,4 +1,4 @@
-use wgpu::Device;
+use wgpu::{util::DeviceExt, Device};
 
 use super::{BoundBuffer, CameraUniform, GpuBuffer, GpuObject};
 use crate::state::Engine;
