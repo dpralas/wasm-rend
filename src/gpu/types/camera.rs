@@ -35,6 +35,7 @@ impl<'a> CameraUniform<'a> {
         let matrix = self
             .camera
             .build_view_projection_matrix()
+            .transpose()
             .to_cols_array_2d();
         bytemuck::cast_slice(&[matrix]).to_vec()
     }
