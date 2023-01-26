@@ -133,9 +133,9 @@ impl WgpuContext {
                             resolve_target: None,
                             ops: wgpu::Operations {
                                 load: wgpu::LoadOp::Clear(Color {
-                                    r: 0.0,
-                                    g: 0.0,
-                                    b: 0.0,
+                                    r: 0.1,
+                                    g: 0.2,
+                                    b: 0.3,
                                     a: 1.0,
                                 }),
                                 store: true,
@@ -148,15 +148,17 @@ impl WgpuContext {
             // Draw world data
             pass.set_pipeline(&pipeline);
             pass.set_bind_group(0, &camera_uniform.group, &[]);
-            for (vertex_buffer, index_buffer) in
-                vertex_buffers.iter().zip(index_buffers.iter())
+            for (n, (vertex_buffer, index_buffer)) in
+                vertex_buffers.iter().zip(index_buffers.iter()).enumerate()
             {
                 pass.set_vertex_buffer(0, vertex_buffer.slice(..));
                 pass.set_index_buffer(
                     index_buffer.slice(..),
                     wgpu::IndexFormat::Uint32,
                 );
-                pass.draw_indexed(0..36, 0, 0..1)
+                let num_indexes = state.engine.meshes[n].indices.len();
+                info!("indexes: {num_indexes}");
+                pass.draw_indexed(0..num_indexes as u32, 0, 0..1)
             }
         }
 

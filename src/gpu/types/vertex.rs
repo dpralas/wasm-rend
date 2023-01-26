@@ -19,7 +19,18 @@ impl GpuVertex {
             array_stride: std::mem::size_of::<GpuVertex>()
                 as wgpu::BufferAddress,
             step_mode: wgpu::VertexStepMode::Vertex,
-            attributes: &wgpu::vertex_attr_array![0 => Float32x3, 1 => Float32x3],
+            attributes: &[
+                wgpu::VertexAttribute {
+                    format: wgpu::VertexFormat::Float32x3,
+                    offset: 0,
+                    shader_location: 0,
+                },
+                wgpu::VertexAttribute {
+                    format: wgpu::VertexFormat::Float32x3,
+                    offset: 4 * 3,
+                    shader_location: 1,
+                },
+            ],
         };
 }
 

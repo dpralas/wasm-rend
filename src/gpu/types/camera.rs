@@ -32,12 +32,9 @@ impl<'a> GpuBuffer for CameraUniform<'a> {
 
 impl<'a> CameraUniform<'a> {
     fn get_buffer_contents(&self) -> Vec<u8> {
-        let matrix = self
-            .camera
-            .build_view_projection_matrix()
-            .transpose()
-            .to_cols_array_2d();
-        bytemuck::cast_slice(&[matrix]).to_vec()
+        let mat = self.camera.build_view_projection_matrix();
+        let mat_ref = mat.as_ref();
+        bytemuck::cast_slice(mat_ref).to_vec()
     }
 
     fn create_bind_group(
@@ -72,7 +69,7 @@ impl<'a> CameraUniform<'a> {
                 ty: wgpu::BindingType::Buffer {
                     ty: wgpu::BufferBindingType::Uniform,
                     has_dynamic_offset: false,
-                    min_binding_size: None,
+                    min_binding_size: wgpu::BufferSize::new(64),
                 },
                 count: None,
             }],
