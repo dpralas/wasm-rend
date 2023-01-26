@@ -9,15 +9,15 @@
 
 <body>
     <script type="module">
-        import init, { get_state } from './wasm_rend.js';
+        import init, { add_file } from './wasm_rend.js';
 
-        function loadFile(state, file) {
+        function loadFile(file) {
             let reader = new FileReader();
             reader.readAsArrayBuffer(file);
             reader.onload = () => {
                 let arrayBuffer = reader.result;
                 let bytes = new Uint8Array(arrayBuffer);
-                state.add_stl(bytes);
+                add_file(bytes);
             }
         }
         function initSetup(state) {
@@ -28,17 +28,16 @@
             const input = document.getElementById("file-input");
             input.onchange = e => {
                 const file = e.target.files[0];
-                loadFile(state, file);
+                loadFile(file);
             }
         }
 
         init().then((wasm) => {
-            let state = get_state();
-            initSetup(state);
+            initSetup();
         });
     </script>
     <input id="file-input" type="file">
-    <canvas id="wgpu_canvas" width="640" height="480"></canvas>
+    <canvas id="wgpu_canvas" width="1280" height="720"></canvas>
     <div id="event_logger_container">
         <h2>Event Log</h2>
         <ul id="event_logger">

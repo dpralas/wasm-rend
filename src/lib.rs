@@ -22,8 +22,8 @@ use crate::{runtime::Runtime, state::State};
 static STATE: Lazy<Mutex<State>> = Lazy::new(|| Mutex::new(State::default()));
 
 #[wasm_bindgen]
-pub fn get_state() -> State {
-    STATE.lock().unwrap().clone()
+pub fn add_file(file: &[u8]) {
+    STATE.lock().unwrap().add_stl(file);
 }
 
 #[wasm_bindgen(start)]

@@ -156,7 +156,7 @@ impl WgpuContext {
                     index_buffer.slice(..),
                     wgpu::IndexFormat::Uint32,
                 );
-                pass.draw(0..8, 0..0);
+                pass.draw_indexed(0..4, 0, 0..2)
             }
         }
 
