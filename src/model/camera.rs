@@ -30,7 +30,7 @@ impl Default for Camera {
             up: Vec3::Z,
             aspect: 1280.0 / 720.0,
             fov_y: core::f32::consts::FRAC_PI_4,
-            z_near: 0.1,
+            z_near: 0.01,
             z_far: 10000.0,
         }
     }
@@ -41,14 +41,10 @@ impl Camera {
         let projection = glam::Mat4::perspective_rh(
             core::f32::consts::FRAC_PI_4,
             1280.0 / 720.0,
-            0.1,
-            10000.0,
+            self.z_near,
+            self.z_far,
         );
-        let view = glam::Mat4::look_at_rh(
-            glam::Vec3::new(1.0, -5.0, 3.0) * 30.0,
-            glam::Vec3::ZERO,
-            glam::Vec3::Z,
-        );
+        let view = glam::Mat4::look_at_rh(self.eye, self.focus, self.up);
         projection * view
     }
 }

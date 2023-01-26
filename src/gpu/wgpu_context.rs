@@ -5,7 +5,7 @@ use wgpu::{Color, ShaderModule};
 use winit::dpi::PhysicalSize;
 
 use super::{frame::Frame, pipeline, Shader};
-use crate::state::State;
+use crate::{gpu::types::texture, state::State};
 
 pub struct WgpuContext {
     pub surface: wgpu::Surface,
@@ -120,6 +120,11 @@ impl WgpuContext {
 
         let vertex_buffers = frame.create_vertex_buffers(&self.device);
         let index_buffers = frame.create_index_buffers(&self.device);
+        let depth_texture = texture::Texture::create_depth_texture(
+            &self.device,
+            &self.config,
+            "depth_tex",
+        );
 
         // Execute render pass
         {
@@ -142,7 +147,16 @@ impl WgpuContext {
                             },
                         },
                     )],
-                    depth_stencil_attachment: None,
+                    depth_stencil_attachment: Some(
+                        wgpu::RenderPassDepthStencilAttachment {
+                            view: &depth_texture.view,
+                            depth_ops: Some(wgpu::Operations {
+                                load: wgpu::LoadOp::Clear(1.0),
+                                store: true,
+                            }),
+                            stencil_ops: None,
+                        },
+                    ),
                 });
 
             // Draw world data

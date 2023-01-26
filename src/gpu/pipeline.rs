@@ -1,4 +1,4 @@
-use wgpu::PipelineLayout;
+use wgpu::{DepthStencilState, Face, PipelineLayout};
 
 use super::{GpuPrimitive, GpuVertex};
 
@@ -31,7 +31,7 @@ pub(crate) fn get(
                 topology: wgpu::PrimitiveTopology::TriangleList,
                 strip_index_format: None,
                 front_face: wgpu::FrontFace::Ccw,
-                cull_mode: None,
+                cull_mode: Some(Face::Back),
                 // Setting this to anything other than Fill requires
                 // Features::NON_FILL_POLYGON_MODE
                 polygon_mode: wgpu::PolygonMode::Fill,
@@ -40,7 +40,13 @@ pub(crate) fn get(
                 // Requires Features::CONSERVATIVE_RASTERIZATION
                 conservative: false,
             },
-            depth_stencil: None,
+            depth_stencil: Some(DepthStencilState {
+                format: wgpu::TextureFormat::Depth32Float,
+                depth_write_enabled: true,
+                depth_compare: wgpu::CompareFunction::LessEqual,
+                stencil: wgpu::StencilState::default(),
+                bias: wgpu::DepthBiasState::default(),
+            }),
             multisample: wgpu::MultisampleState {
                 count: 1,
                 mask: !0,
