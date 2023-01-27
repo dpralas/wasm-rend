@@ -1,4 +1,4 @@
-# wgpu based STL rendering engine
+# wgpu based STL rendering engine (WIP)
 ## Inspiration:
 
 * https://github.com/gfx-rs/wgpu
@@ -34,6 +34,6 @@ http
 ```
 
 ## TODOs:
-* implement frame from engine
-* implement solid pipeline
-* implement mouse and keyboard input
+* fix backface rendering
+* implement camera movement
+* fix main thread blocking
